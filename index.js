@@ -1,6 +1,6 @@
 const express = require('express'); // imports en node js sin ninguna configuracion
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // config para recibir info
 app.use(express.json())
