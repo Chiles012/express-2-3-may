@@ -1,6 +1,6 @@
 const express = require('express'); // imports en node js sin ninguna configuracion
 const app = express();
-const port = 3001; // regularmente se usa el puerto 3000
+const port = process.env.PORT || 3001; // regularmente se usa el puerto 3000
 
 // config para recibir info
 app.use(express.json()) // nos permite que nuestra peticion post reciba informacion desde el body
@@ -74,16 +74,14 @@ app.put('/platillo/:id', (req, res) => {
     const { nombre, descripcion, precio } = req.body;
 
     // Regrasara todos los elementos que no tengan el id recibido por params/ practicamente eliminamo
-    const auxPlatillos = platillos.filter(platillo => platillo.id !== Number(id)); 
+    platillos = platillos.filter(platillo => platillo.id !== Number(id)); 
 
-    auxPlatillos.push({
+    platillos.push({
         id: Number(id),
         nombre: nombre,
         descripcion: descripcion,
         precio: precio
     })
-
-    platillos = auxPlatillos;
 
     res
         .status(200)
