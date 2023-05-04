@@ -1,11 +1,14 @@
 const express = require('express'); // imports en node js sin ninguna configuracion
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3001; // regularmente se usa el puerto 3000
 
 // config para recibir info
-app.use(express.json())
+app.use(express.json()) // nos permite que nuestra peticion post reciba informacion desde el body
 
-const platillos = [ // corchetes = arreglos
+// let
+// var son modificables 
+// const no es modificable
+let platillos = [ // corchetes = arreglos
     { // llaves = json / objetojs
         // key = variable : value = valor
         id: 1,
@@ -33,10 +36,10 @@ app.get('/platillo/all', (req, res) => {
         .send()
 })
 
+// read / get
 app.get('/platillo/:id', (req, res) => {
-    console.log(typeof req.params.id)
     res
-        .status(200)
+        .status(200) // 200 OK
         .json({
             mensaje: 'Todos los platillos obtenidos correctamente',
             platillo: platillos.find(platillo => platillo.id == req.params.id)
@@ -44,6 +47,7 @@ app.get('/platillo/:id', (req, res) => {
         .send()
 })
 
+// create / post
 app.post('/platillo', (req, res) => {
     const { id, nombre, descripcion, precio } = req.body; // destructoring  = extraer toda la info de un json/objectjs
 
@@ -55,17 +59,60 @@ app.post('/platillo', (req, res) => {
     })
 
     res
-        .status(201)
+        .status(201) // 201 significa created
         .json({
-            mensaje: 'Agregado correctament',
+            mensaje: 'Agregado correctamente',
             platillos: platillos
         })
         .send()
 
 })
 
+// Update/ metodo put
+app.put('/platillo/:id', (req, res) => {
+    const { id } = req.params; // Destructoring
+    const { nombre, descripcion, precio } = req.body;
+
+    // Regrasara todos los elementos que no tengan el id recibido por params/ practicamente eliminamo
+    const auxPlatillos = platillos.filter(platillo => platillo.id !== Number(id)); 
+
+    auxPlatillos.push({
+        id: Number(id),
+        nombre: nombre,
+        descripcion: descripcion,
+        precio: precio
+    })
+
+    platillos = auxPlatillos;
+
+    res
+        .status(200)
+        .json({
+            mensaje: 'Actualizado correctamente',
+            platillos: platillos
+        })
+        .send()
+
+})
+
+// DELETE / delete
+app.delete('/platillo/:id', (req, res) => {
+    const { id } = req.params; // Destructoring
+
+    // Regrasara todos los elementos que no tengan el id recibido por params/ practicamente eliminamo
+    platillos = platillos.filter(platillo => platillo.id !== Number(id)); 
+
+    res
+        .status(200)
+        .json({
+            mensaje: 'Eliminado correctamente',
+            platillos: platillos
+        })
+        .send()
+})
+
 // servidor
-app.listen(port, () => {
+app.listen(port, () => { // levanta el servidor
     console.log('Servidor funcionando en el puerto: ' + port)
 });
 
